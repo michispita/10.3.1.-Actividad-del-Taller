@@ -9,17 +9,16 @@ let newItem=document.createElement("li");
 if (input.value.trim()!= ""){
     newItem.innerText=input.value;
     list.appendChild(newItem);
-    input.value="";
-
-//Guardamos el valor del item en el localStorage
-localStorage.setItem("inputDato", newItem.value);
-console.log(localStorage)
+    
+//Guardamos el valor en el localStorage
+localStorage.setItem("inputDato", JSON.stringify(input.value));/*el valor que queremos agregar que es el del input.value
+                                                               no newItem que es la li en si.
+                                                               el método JSON.stringify()-> string, el local solo guarda texto*/
+ console.log(localStorage)
+let retrieved=JSON.parse(localStorage.getItem("inputDato")) /*para revertir y obtener el valor guardado en su forma original
+                                                             JSON.parse()-> Obj*/
+console.log(retrieved)
 }
 
 });
 
-/*Tener en cuenta que el contenido del listado (y su visualización) 
-deben mantenerse aún cuando el navegador se cierre y se vuelva a abrir.
-
-newItem.innerHTML=localStorage.getItem("inputDato"); y stringify? 
-*/
