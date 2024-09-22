@@ -1,61 +1,56 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const itemInput = document.getElementById('item');
-    const agregarButton = document.getElementById('agregar');
-    const limpiarButton = document.getElementById('limpiar');
-    const contenedor = document.getElementById('contenedor');
+const itemInput = document.getElementById('item');  
+const agregarButton = document.getElementById('agregar');  
+const contenedor = document.getElementById('contenedor'); 
+const limpiarButton = document.getElementById('limpiar'); 
 
-    // Función para actualizar la vista del listado
-    function updateItemList() {
-        const items = JSON.parse(localStorage.getItem('items')) || [];
-        contenedor.innerHTML = '';
-        items.forEach((item, index) => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item d-flex justify-content-between align-items-center';
-            li.textContent = item;
 
-            // Crear botón de eliminar para cada ítem
-            const removeButton = document.createElement('button');
-            removeButton.className = 'btn btn-sm btn-outline-danger';
-            removeButton.textContent = 'Eliminar';
-            removeButton.addEventListener('click', () => {
-                removeItem(index);
-            });
+function obtenerItemsDeLocalStorage() {
+  const items = localStorage.getItem('items');  
+  return items ? JSON.parse(items) : [];  
+}
 
-            li.appendChild(removeButton);
-            contenedor.appendChild(li);
-        });
-    }
+//  guardar en localStorage
+function guardarItemsEnLocalStorage(items) {
+  localStorage.setItem('items', JSON.stringify(items));  // Convierte el array en una cadena JSON y lo guarda en localStorage
+}
 
-    // Función para guardar el listado en el localStorage
-    function saveItems(items) {
-        localStorage.setItem('items', JSON.stringify(items));
-    }
+// actualiza dom y arma lista
+function seaArmaLista() {
+  contenedor.innerHTML = '';  
+  const items = obtenerItemsDeLocalStorage();  
 
-    // Agregar nuevo ítem
-    agregarButton.addEventListener('click', () => {
-        const newItem = itemInput.value.trim();
-        if (newItem) {
-            const items = JSON.parse(localStorage.getItem('items')) || [];
-            items.push(newItem);
-            saveItems(items);
-            updateItemList();
-            itemInput.value = ''; // Limpiar el campo de entrada
-        }
-    });
+  
+  items.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item';  
+    li.textContent = item;  
 
-    // Eliminar un ítem
-    function removeItem(index) {
-        const items = JSON.parse(localStorage.getItem('items')) || [];
-        items.splice(index, 1);
-        saveItems(items);
-        updateItemList();
-    }
+    contenedor.appendChild(li);  
+  });
+}
 
-    // Limpiar todos los ítems
-    limpiarButton.addEventListener('click', () => {
-        localStorage.removeItem('items');
-        updateItemList();
-    });
+// Función para agregar un nuevo ítem
+function agregarItem() {
+  const nuevoItem = itemInput.value.trim();  
 
-   
-});
+  if (nuevoItem) {  
+    const items = obtenerItemsDeLocalStorage();  
+    items.push(nuevoItem);  
+    guardarItemsEnLocalStorage(items);  
+    seaArmaLista();  
+    itemInput.value = ''; 
+  }
+}
+
+// Función para limpiar la lista
+function limpiarLista() {
+  localStorage.removeItem('items');  
+  seaArmaLista(); 
+}
+
+// agrega eventos boton
+agregarButton.addEventListener('click', agregarItem);  
+limpiarButton.addEventListener('click', limpiarLista);  
+
+
+document.addEventListener('DOMContentLoaded', seaArmaLista);
